@@ -1,0 +1,11 @@
+version: "2"
+services:
+  server:
+    container_name: server
+    build: ./server
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./server/volumes/:/var/www/app/
+    ports:
+      - "8000:8000"
