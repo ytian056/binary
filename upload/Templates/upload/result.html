@@ -1,0 +1,135 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Result</title>
+
+<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
+
+<style id="css">
+body {
+  font: 300 14px 'Helvetica Neue', Helvetica;
+}
+.node rect {
+  stroke: #333;
+  fill: #fff;
+}
+.edgePath path {
+  stroke: #333;
+  fill: #333;
+  stroke-width: 1.5px;
+}
+
+svg {
+  float: left;
+}
+</style>
+
+<h1>Dagre D3 Demo: TCP State Diagram</h1>
+
+<div>
+    <svg width="620" height="1000" id="svg1">
+        <line x1="0%" y1="0%" x2="100%" y2="0%" stroke="black"/>
+        <line x1="0%" y1="0%" x2="100%" y2="100%" stroke="black"/>
+        <g/>
+    </svg>
+
+    <svg width="620" height="1000" id="svg2">
+        <line x1="0%" y1="0%" x2="100%" y2="0%" stroke="black"/>
+        <line x1="0%" y1="0%" x2="100%" y2="100%" stroke="black"/>
+        <g/>
+    </svg>
+
+
+</div>
+
+
+
+
+<script id="js">
+// Create a new directed graph
+var g = new dagreD3.graphlib.Graph().setGraph({});
+var g_ = new dagreD3.graphlib.Graph().setGraph({});
+// States and transitions from RFC 793
+var states = [ "Beijing", "Shijiazhuang", "Zhengzhou", "Taiyuan", "Xi'an", "Guiyang",
+               "Wuhan", "Changsha", "Chongqing", "Chengdu", "Guangzhou" ];
+var states_ = [ "Beijing", "Shijiazhuang", "Zhengzhou", "Taiyuan", "Xi'an",
+               "Wuhan", "Changsha", "Chongqing", "Chengdu", "Guangzhou" ];
+// Automatically label each of the nodes
+states.forEach(function(state) { g.setNode(state, { label: state }); });
+states_.forEach(function(state_) { g_.setNode(state_, { label: state_ }); });
+// Set up the edges
+g.setEdge("Beijing",     "Shijiazhuang",     { label: "Railway" });
+g.setEdge("Shijiazhuang",     "Zhengzhou",   { label: "Railway" });
+g.setEdge("Shijiazhuang",     "Taiyuan",   { label: "Railway" });
+g.setEdge("Zhengzhou",   "Wuhan",      { label: "Railway" });
+g.setEdge("Zhengzhou",   "Xi'an",       { label: "Railway"});
+g.setEdge("Taiyuan",   "Xi'an",     { label: "Railway" });
+g.setEdge("Xi'an",   "Chengdu",     { label: "Railway" });
+g.setEdge("Wuhan",      "Changsha",  { label: "Railway" });
+g.setEdge("Wuhan",      "Chongqing", { label: "Railway" });
+g.setEdge("Changsha",  "Guangzhou",    { label: "Railway" });
+g.setEdge("Chongqing", "Chengdu",   { label: "Railway" });
+g.setEdge("Chengdu", "Guiyang",   { label: "Railway" });
+g.setEdge("Guiyang", "Guangzhou",   { label: "Railway" });
+
+g_.setEdge("Beijing",     "Shijiazhuang",     { label: "Railway" });
+g_.setEdge("Shijiazhuang",     "Zhengzhou",   { label: "Railway" });
+g_.setEdge("Shijiazhuang",     "Taiyuan",   { label: "Railway" });
+g_.setEdge("Zhengzhou",   "Wuhan",      { label: "Railway" });
+g_.setEdge("Zhengzhou",   "Xi'an",       { label: "Railway"});
+g_.setEdge("Taiyuan",   "Xi'an",     { label: "Railway" });
+g_.setEdge("Xi'an",   "Chengdu",     { label: "Railway" });
+g_.setEdge("Wuhan",      "Changsha",  { label: "Railway" });
+g_.setEdge("Wuhan",      "Chongqing", { label: "Railway" });
+g_.setEdge("Changsha",  "Guangzhou",    { label: "Railway" });
+g_.setEdge("Chongqing", "Chengdu",   { label: "Railway" });
+g_.setEdge("Chengdu", "Guangzhou",   { label: "Airplane" });
+// Set some general styles框角半径
+g.nodes().forEach(function(v) {
+  var node = g.node(v);
+  node.rx = node.ry = 5;
+});
+g_.nodes().forEach(function(v) {
+  var node_ = g_.node(v);
+  node_.rx = node_.ry = 5;
+});
+// Add some custom colors based on state//框背景色
+g.node('Beijing').style = "fill: #f77";
+g.node('Guangzhou').style = "fill: #7f7";
+g.node('Guiyang').style = "fill: yellow";
+g_.node('Beijing').style = "fill: #f77";
+g_.node('Guangzhou').style = "fill: #7f7";
+
+var svg = d3.select("#svg1"),//
+    inner = svg.select("g");
+var svg_ = d3.select("#svg2"),
+    inner_ = svg_.select("g");
+// Set up zoom support//整体缩放
+var zoom = d3.zoom().on("zoom", function() {
+      inner.attr("transform", d3.event.transform);
+    });
+svg.call(zoom);
+
+var zoom_ = d3.zoom().on("zoom", function() {
+      inner_.attr("transform", d3.event.transform);
+    });
+svg_.call(zoom_);
+
+
+// Create the renderer
+var render = new dagreD3.render();
+var render_ = new dagreD3.render();
+// Run the renderer. This is what draws the final graph.
+render(inner, g);
+render_(inner_, g_);
+// Center the graph
+var initialScale = 0.75;
+svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
+svg.attr('height', g.graph().height * initialScale + 40);
+svg_.call(zoom_.transform, d3.zoomIdentity.translate((svg_.attr("width") - g_.graph().width * initialScale) / 2, 20).scale(initialScale));
+svg_.attr('height', g_.graph().height * initialScale + 40);
+
+</script>
+
+<script src="demo.js"></script>
