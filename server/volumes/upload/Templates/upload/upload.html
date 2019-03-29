@@ -2,14 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <style type="text/css">
+        .upload{
+            position: absolute;
+            width: 300px;
+            height: 80px;
+            border: 1px solid red;
+            background-color: aquamarine;
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            top: 50%;
+            left: 50%;
+            margin-top: -200px;
+            margin-left: -150px;
+        }
+
+    </style>
 </head>
 <body>
 <h2>Upload</h2>
-    <form action="/upload/" method="post" enctype="multipart/form-data">
-        <input type="file" name="document">
-        <input type="submit">
-        {% csrf_token %}
-    </form>
+    <div class="upload">
+        <div>
+        <form action="/uploads/result/" method="post" enctype="multipart/form-data">
+            <input type="file" name="document1">
+            <br/>
+            <input type="file" name="document2">
+            <br/>
+            <input type="submit">
+            {% csrf_token %}
+        </form>
+        </div>
+    </div>
+
 </body>
 </html>

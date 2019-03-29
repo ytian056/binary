@@ -1,12 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
 
-<meta charset="utf-8">
-<title>Result</title>
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
 
-<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-<script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
-
-<style id="css">
+    <style id="css">
 body {
   font: 300 14px 'Helvetica Neue', Helvetica;
 }
@@ -26,7 +27,12 @@ svg {
 
 </style>
 
-<h2>BinDiff(test)--simpleMap</h2>
+</head>
+<script>
+
+</script>
+<body>
+<h1>Test</h1>
 
 <div>
     <svg width="600" height="800" id="svg1">
@@ -38,23 +44,14 @@ svg {
         <line x1="0%" y1="0%" x2="100%" y2="0%" style="stroke:black;stroke-width:5px"/>
         <g/>
     </svg>
-
 </div>
 
-
-
-
 <script id="js">
-
-
-
-// Create a new directed graph
 var g = new dagreD3.graphlib.Graph().setGraph({});
 var g_ = new dagreD3.graphlib.Graph().setGraph({});
-
 var Dict = {{ Dict|safe }};
 var states= [];
-var Dict_ = {{ Dict_|safe }};
+var Dict_ = {{ Dict|safe }};
 var states_= [];
 
 for(i in Dict){
@@ -63,32 +60,19 @@ for(i in Dict){
 for(i in Dict_){
     states_.push(Dict_[i].city);
 };
-// Automatically label each of the nodes
+
 states.forEach(function(state) { g.setNode(state, { label: state }); });
 states_.forEach(function(state_) { g_.setNode(state_, { label: state_ }); });
-// Set up the edges
+
 for(i in Dict){
     if(Dict[i].next!='None')
-        g.setEdge(Dict[i].city,   Dict[i].next,     { label: Dict[i].wayToNext  });
-    if(Dict[i].flag==1)
-        g.node(Dict[i].city).style = "fill: #7f7";
-    else if(Dict[i].flag==2)
-        g.node(Dict[i].city).style = "fill: #f77";
-    else if(Dict[i].flag==3)
-        g.node(Dict[i].city).style = "fill: yellow";
+        g.setEdge(Dict[i].city,   Dict[i].next,     { label: Dict[i].wayToNext });
+
 };
 for(i in Dict_){
     if(Dict_[i].next!='None')
         g_.setEdge(Dict_[i].city,   Dict_[i].next,     { label: Dict_[i].wayToNext });
-    if(Dict_[i].flag==1)
-        g_.node(Dict_[i].city).style = "fill: #7f7";
-    else if(Dict_[i].flag==2)
-        g_.node(Dict_[i].city).style = "fill: #f77";
-    else if(Dict_[i].flag==3)
-        g_.node(Dict_[i].city).style = "fill: yellow";
 };
-
-// Set some general styles框角半径
 g.nodes().forEach(function(v) {
   var node = g.node(v);
   node.rx = node.ry = 5;
@@ -97,38 +81,39 @@ g_.nodes().forEach(function(v) {
   var node_ = g_.node(v);
   node_.rx = node_.ry = 5;
 });
-// Add some custom colors based on state//框背景色
 
+
+for(i in Dict){
+    if(Dict[i].flag!='0')
+        alert(Dict[i].city);
+        if(Dict[i].flag=='1')
+            g.node(Dict[i].city).style = "fill: #7f7";
+        else if(Dict[i].flag==)
+};
 
 var svg = d3.select("#svg1"),//
     inner = svg.select("g");
-var svg_ = d3.select("#svg2"),
-    inner_ = svg_.select("g");
-// Set up zoom support//整体缩放
+var svg_ = d3.select("#svg2"),//
+    inner_ = svg_.select("g_");
 var zoom = d3.zoom().on("zoom", function() {
       inner.attr("transform", d3.event.transform);
     });
-svg.call(zoom);
-
 var zoom_ = d3.zoom().on("zoom", function() {
       inner_.attr("transform", d3.event.transform);
     });
+
+svg.call(zoom);
 svg_.call(zoom_);
-
-
-// Create the renderer
 var render = new dagreD3.render();
 var render_ = new dagreD3.render();
-// Run the renderer. This is what draws the final graph.
 render(inner, g);
 render_(inner_, g_);
-// Center the graph
 var initialScale = 0.65;
 svg.call(zoom.transform, d3.zoomIdentity.translate((svg.attr("width") - g.graph().width * initialScale) / 2, 20).scale(initialScale));
 svg.attr('height', g.graph().height * initialScale + 40);
 svg_.call(zoom_.transform, d3.zoomIdentity.translate((svg_.attr("width") - g_.graph().width * initialScale) / 2, 20).scale(initialScale));
 svg_.attr('height', g_.graph().height * initialScale + 40);
-
 </script>
 
-
+</body>
+</html>
